@@ -25,6 +25,7 @@
 cd %rootdir%
 
 :: Write the erl.ini file
+@if "%skip_write_ini%"=="yes" goto :write_ini_skipped
 @set erl_ini=%erts_dir%\bin\erl.ini
 @set converted_bindir=%bindir:\=\\%
 @set converted_rootdir=%rootdir:\=\\%
@@ -32,6 +33,7 @@ cd %rootdir%
 @echo Bindir=%converted_bindir% >> "%erl_ini%"
 @echo Progname=%progname% >> "%erl_ini%"
 @echo Rootdir=%converted_rootdir% >> "%erl_ini%"
+:write_ini_skipped
 
 :: Start the release in an `erl` shell
 @"%erl%" %erl_opts% %sys_config% -boot "%boot_script%" %*
@@ -56,6 +58,7 @@ cd %rootdir%
 
 :: Set the ERTS dir from erl
 :set_erts_dir_from_erl
+@set skip_write_ini=yes
 @for /f "delims=" %%i in ('where erl') do (
   set erl=%%i
 )
