@@ -41,6 +41,8 @@
          intensity/0,
          symlink_or_copy/2]).
 
+-include_lib("kernel/include/file.hrl").
+
 -define(DFLT_INTENSITY,   high).
 -define(ONE_LEVEL_INDENT, "     ").
 %%============================================================================
@@ -238,6 +240,12 @@ symlink_or_copy(Source, Target) ->
 
 
 win32_symlink(Source, Target) ->
+    win32_symlink_for_type(Source, Target, file:read_file_info(Source)).
+
+win32_symlink_for_type(Source, Target, {ok, #file_info{type = regular}}) ->
+    os:cmd("cmd /c mklink /h " ++ Target ++ " " ++ Source),
+    ok;
+win32_symlink_for_type(Source, Target, {ok, #file_info{type = directory}}) ->
     os:cmd("cmd /c mklink /j " ++ Target ++ " " ++ Source),
     ok.
 
