@@ -36,7 +36,8 @@ cd %rootdir%
 :write_ini_skipped
 
 :: Start the release in an `erl` shell
-@"%erl%" %erl_opts% %sys_config% -boot "%boot_script%" %*
+@set boot=-boot "%boot_script%" -boot_var ERTS_LIB_DIR "%erts_lib%"
+@"%erl%" %erl_opts% %sys_config% %boot% %*
 
 @goto :eof
 
@@ -53,6 +54,7 @@ cd %rootdir%
 :: Set the ERTS dir from the passed in erts_vsn
 :set_erts_dir_from_default
 @set erts_dir=%erts_dir%
+@set erts_lib=%release_root_dir%\lib
 @set root_dir=%release_root_dir%
 @goto :eof
 
@@ -67,6 +69,7 @@ cd %rootdir%
   set erl_root=%%i
 )
 @set erts_dir=%erl_root%\erts-%erts_vsn%
+@set erts_lib=%erl_root%\lib
 @set rootdir=%erl_root%
 @goto :eof
 
