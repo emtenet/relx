@@ -525,7 +525,7 @@ include_erts(State, Release, OutputDir, RelDir) ->
 make_boot_script(State, Release, OutputDir, RelDir) ->
     Options = [{path, [RelDir | rlx_util:get_code_paths(Release, OutputDir)]},
                {outdir, RelDir},
-               {variables, [{"ERTS_LIB_DIR", code:lib_dir()}]},
+               {variables, make_boot_script_variables(State, OutputDir)]},
                no_module_tests, silent],
     Name = erlang:atom_to_list(rlx_release:name(Release)),
     ReleaseFile = filename:join([RelDir, Name ++ ".rel"]),
@@ -549,6 +549,19 @@ make_boot_script(State, Release, OutputDir, RelDir) ->
             ?RLX_ERROR({release_script_generation_warn, Module, Warnings});
         {error,Module,Error} ->
             ?RLX_ERROR({release_script_generation_error, Module, Error})
+    end.
+
+make_boot_script_variables(State, OutputDir) ->
+    case os:type() of
+        {unix, _} ->
+            [{"ERTS_LIB_DIR", code:lib_dir()}];
+        {win32, _} ->
+            case rlx_state:get(State, include_erts, true) of
+                true ->
+                    [];
+                false ->
+                    [{"RELEASE_DIR", OutputDir}]
+            end
     end.
 
 create_start_clean(RelDir, OutputDir, Options, State) ->
