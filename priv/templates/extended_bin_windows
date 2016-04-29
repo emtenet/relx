@@ -90,7 +90,6 @@
 :: Set the ERTS dir from the passed in erts_vsn
 :set_erts_dir_from_default
 @set erts_dir=%possible_erts_dir%
-@set erts_lib=%release_root_dir%\lib
 @set rootdir=%release_root_dir%
 @goto :eof
 
@@ -105,7 +104,6 @@
   set erl_root=%%i
 )
 @set erts_dir=%erl_root%\erts-%erts_vsn%
-@set erts_lib=%erl_root%\lib
 @set rootdir=%erl_root%
 @goto :eof
 
@@ -198,7 +196,7 @@
 
 :: Start a console
 :console
-@set boot=-boot "%boot_script%" -boot_var ERTS_LIB_DIR "%erts_lib%"
+@set boot=-boot "%boot_script%" -boot_var RELEASE_DIR "%release_root_dir%"
 @start "%rel_name% console" %werl% %boot% %sys_config%  ^
        -args_file "%vm_args%"
 @goto :eof
@@ -215,7 +213,7 @@
 
 :: Attach to a running node
 :attach
-@set boot=-boot "%clean_boot_script%" -boot_var ERTS_LIB_DIR "%erts_lib%"
+@set boot=-boot "%clean_boot_script%" -boot_var RELEASE_DIR "%release_root_dir%"
 @start "%node_name% attach" %werl% %boot% ^
        -remsh %node_name% %node_type% console -setcookie %cookie%
 @goto :eof
