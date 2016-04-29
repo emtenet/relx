@@ -197,8 +197,7 @@
 :: Start a console
 :console
 @set boot=-boot "%boot_script%" -boot_var RELEASE_DIR "%release_root_dir%"
-@start "%rel_name% console" %werl% %boot% %sys_config%  ^
-       -args_file "%vm_args%"
+@start "%rel_name% console" %werl% %boot% %sys_config% -args_file "%vm_args%"
 @goto :eof
 
 :: Ping the running node
